@@ -99,6 +99,30 @@ app.use(function(err, req, res, next){
 });
 
 
+/* File upload route: */
+
+app.get('/file-upload', function(req, res) {
+    var now = new Date();
+    res.render('file-upload', {
+        year: now.getFullYear(),
+        month: now.getMonth()
+    })
+});
+
+
+/* Here we parse a file that was uploaded and output feedback: */
+
+app.post('/file-upload/:year/:month',
+  function(req, res){
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, file){
+      if(err) return res.redirect(303, '/error');
+      console.log('Received File');
+      console.log(file);
+      res.redirect( 303, '/thankyou');
+  });
+});
+
 /* Handle 404: */
 
 app.use(function(req, res){
