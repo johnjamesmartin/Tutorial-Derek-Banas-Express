@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 var formidable = require('formidable');
+var session = require('express-session');
+var parseurl = require('parseurl');
 
 var credentials = require('./credentials');
 
@@ -146,6 +148,36 @@ app.get('/cookie', function(req, res) {
     res.cookie('username', 'JM', {
         expire: new Date() + 999
     }).send('username has the value of JM');
+});
+
+
+/* Configure session object: */
+
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: credentials.cookieSecret,
+}));
+
+
+/* Another example of middleware. Increment viewcount: */
+
+app.use(function(req, res, next){
+  var views = req.session.views;
+  if (!views){
+    views = req.session.views = {};
+  }
+
+  var pathname = parseurl(req).pathname;
+  views[pathname] = (views[pathname] || 0) + 1;
+  next();
+});
+ 
+
+/* Viewcount route for displaying number of views: */
+
+app.get('/viewcount', function(req, res, next){
+  res.send('You viewed this page ' + req.session.views['/viewcount'] + ' times ');
 });
 
 
