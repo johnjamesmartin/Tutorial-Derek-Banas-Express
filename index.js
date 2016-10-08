@@ -123,6 +123,32 @@ app.post('/file-upload/:year/:month',
   });
 });
 
+
+/* List cookies route: */
+
+app.get('/listcookies', function(req, res) {
+    console.log('Cookies: ', req.cookies);
+    res.send('Look in console for cookies');
+});
+
+
+/* Delete cookie route: */
+
+app.get('/deletecookie', function(req, res) {
+    res.clearCookie('username');
+    res.send('username cookie deleted');
+});
+
+
+/* Cookie route: */
+
+app.get('/cookie', function(req, res) {
+    res.cookie('username', 'JM', {
+        expire: new Date() + 999
+    }).send('username has the value of JM');
+});
+
+
 /* Handle 404: */
 
 app.use(function(req, res){
