@@ -3,6 +3,7 @@ var app = express();
 var formidable = require('formidable');
 var session = require('express-session');
 var parseurl = require('parseurl');
+var fs = require('fs');
 
 var credentials = require('./credentials');
 
@@ -178,6 +179,37 @@ app.use(function(req, res, next){
 
 app.get('/viewcount', function(req, res, next){
   res.send('You viewed this page ' + req.session.views['/viewcount'] + ' times ');
+});
+
+
+/* Read text file and print contents: */
+
+app.get('/readfile', function(req, res, next) {
+    fs.readFile('./public/randomfile.txt', function(err, data) {
+        if (err) {
+            return console.error(err);
+        }
+        res.send('The file:<br/><br/>' + data.toString());
+    });
+});
+
+
+/* Write to text file (and then read and print contents after to check it worked): */
+
+app.get('/writefile', function(req, res, next) {
+    fs.writeFile('./public/randomfile2.txt', 'Jib hail-shot scuppers pillage bucko lookout Nelsons folly hang the jib draught Brethren of the Coast. Pieces of Eight to go on account take a caulk hardtack parrel weigh anchor cable piracy swab crack Jennys tea cup. Man-of-war marooned landlubber or just lubber Pieces of Eight chase guns gangway topmast sheet galleon me.', function(err) {
+        if (err) {
+            return console.error(err);
+        }
+
+        fs.readFile('./public/randomfile2.txt', function(err, data) {
+        
+        if (err) {
+            return console.error(err);
+        }
+        res.send('The file:<br/><br/>' + data.toString());
+        });
+    });
 });
 
 
